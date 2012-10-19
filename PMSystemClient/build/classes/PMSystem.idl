@@ -1,0 +1,185 @@
+module PMSystem {
+        
+        struct UserData {
+            long id;
+            string username;
+            string password;
+            string privilege;
+            string name;
+            string email;
+            string gender;
+            string birthday;
+            string location;
+            string state;
+        };
+
+        struct UsersBasicData {
+            long id;
+            string username;
+        };
+
+        struct UsersOnlineInfo {
+            long id_user;
+            string username;
+            string privilege;
+            string location;
+            string start_date;
+            string state;
+        };
+
+        typedef sequence<UsersBasicData> UsersList;
+        typedef sequence<UserData> UsersInfo;
+        typedef sequence<string> SessionData;
+        typedef sequence<UsersOnlineInfo> OnlineUsers;
+        
+
+	interface User {
+		long setUser(in string username, in string password, in string privilege, in string name, in string email, in string gender, in string birthday, in string location, in string state);
+		long updateUser(in long id, in string username, in string password, in string privilege, in string name, in string email, in string gender, in string birthday, in string location, in string state);
+                UsersList getAllUsers();
+                UsersInfo getUsers(in string str);
+                UserData getUser(in long id);
+                boolean login(in string username, in string password, in string time);
+                oneway void logout(in long id, in string time);
+                SessionData getSessionData(in string username);
+                boolean trash(in long id);
+                boolean delete(in long id);
+                boolean restore(in long id);
+                OnlineUsers getOnlineUsers();
+	};
+
+       struct ProjectData {
+            long id;
+            long id_user;
+            string user_name;
+            string name;
+            string description;
+            string start_date;
+            string end_date;
+            string state;
+        };
+
+        struct ProjectsBasicData {
+            long id;
+            string name;
+        };
+
+        typedef sequence<ProjectsBasicData> ProjectsList;
+        typedef sequence<ProjectData> ProjectsInfo;
+        
+	interface Project {
+		long setProject(in long id_user, in string name, in string description, in string start_date, in string end_date, in string state);
+		long updateProject(in long id, in long id_user, in string name, in string description, in string start_date, in string end_date, in string state);
+                ProjectsList getAllProjects();
+                ProjectData getProject(in long id);
+                ProjectsInfo getProjects(in string str);
+                boolean trash(in long id);
+                boolean delete(in long id);
+                boolean restore(in long id);
+	};
+        
+        typedef sequence<string> usersnames;
+
+	struct TaskData {
+            long id;
+            long id_project;
+            string project;
+            usersnames users;
+            string title;
+            string description;
+            string start_date;
+            string end_date;
+            long progress;
+            string priority;
+            string notes;
+            string state;
+        };
+
+        struct TasksBasicData {
+            long id;
+            string title;
+        };
+
+        typedef sequence<TasksBasicData> TasksList;
+        typedef sequence<TaskData> TasksInfo;
+        
+	interface Task {
+		long setTask(in long id_project, in usersnames users, in string title, in string description, in string start_date, in string end_date, in long progress, in string priority, in string state);
+                long updateTask(in long id, in long id_project, in usersnames users, in string title, in string description, in string start_date, in string end_date, in long progress, in string priority, in string state);
+                long updateProgress(in long id, in long progress, in string notes, in string state);
+                TasksList getAllTasks();
+                TaskData getTask(in long id);
+                TasksInfo getTasks(in string str);
+                TasksInfo getTasksByUser(in long id);
+                boolean trash(in long id);
+                boolean delete(in long id);
+                boolean restore(in long id);
+	};
+
+        struct GeneralReportData {
+            long total_users;
+            long total_administrators;
+            long total_normalusers;
+            long total_men;
+            long total_women;
+            long total_activeusers;
+            long total_inactiveusers;
+            long total_logins;
+            string last_login;
+            long total_projects;
+            long total_activeprojects;
+            long total_inactiveprojects;
+            string last_project;
+            long total_tasks;
+            long total_started;
+            long total_paused;
+            long total_stoped;
+            long total_finished;
+            long total_inactive;
+            long total_urgent;
+            long total_high;
+            long total_medium;
+            long total_low;
+            string last_task;
+        };
+
+        struct Configuration {
+            string language;
+            string theme;
+        };
+
+        interface Report {
+            GeneralReportData getGeneralReportData();
+            long getLogins(in string date, in string datelimit);
+            Configuration getConfig();
+            boolean setConfig(in string language, in string theme);
+            oneway void addMissingTranslation(in string translation);
+        };
+
+        struct MessageData {
+            long id;
+            long id_sender;
+            long id_receiver;
+            string sender;
+            string receiver;
+            string subject;
+            string message;
+            string date;
+            string state;
+        };
+        
+        typedef sequence<MessageData> Messages;
+        
+        interface Message {
+            boolean sendMessage(in long sender, in long receiver, in string subject, in string message, in string date, in string state);
+            boolean updateState(in long id, in string state);
+            boolean trash(in long id);
+            boolean restore(in long id);
+            boolean delete(in long id);
+            long areNewMessages(in long receiver);
+            MessageData getMessage(in long id);
+            Messages getTrashMessages(in long id_user);
+            Messages getInboxMessages(in long id_user);
+            Messages getOutboxMessages(in long id_user);
+        };
+};
